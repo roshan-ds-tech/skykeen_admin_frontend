@@ -1,5 +1,10 @@
 # Backend Configuration Requirements
 
+## API Endpoint
+
+The frontend applications are configured to send requests to:
+- **API URL:** `https://api.skykeenentreprise.com`
+
 ## CORS Configuration
 
 The backend API must be configured to allow requests from the following frontend origins:

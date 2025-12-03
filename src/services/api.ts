@@ -3,7 +3,7 @@ import axios from 'axios';
 // Configure axios to use credentials for session-based authentication
 axios.defaults.withCredentials = true;
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.skykeenentreprise.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
