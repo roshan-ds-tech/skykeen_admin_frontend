@@ -4,10 +4,25 @@ interface Registration {
   id: number;
   student_name: string;
   student_class: string;
+  school_name: string;
   student_contact: string;
   student_email: string;
+  sibling1_name?: string;
+  sibling1_school?: string;
+  sibling1_class?: string;
+  sibling2_name?: string;
+  sibling2_school?: string;
+  sibling2_class?: string;
   parent_name: string;
+  parent_contact: string;
+  parent_signature?: string;
+  competitions: string[];
+  workshops: string[];
+  payment_mode: string;
+  transaction_id: string;
+  payment_screenshot: string;
   payment_verified: boolean;
+  notes: string;
   created_at: string;
 }
 
