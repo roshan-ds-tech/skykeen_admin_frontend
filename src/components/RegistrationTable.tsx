@@ -47,10 +47,12 @@ const RegistrationTable = ({ registrations, onViewDetails, onDelete }: Registrat
 
   const sortedRegistrations = [...registrations].sort((a, b) => {
     if (!sortField) return 0;
-    
+
     const aValue = a[sortField];
     const bValue = b[sortField];
-    
+
+    if (aValue === undefined || bValue === undefined) return 0;
+
     if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
     if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
     return 0;
