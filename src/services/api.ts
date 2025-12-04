@@ -25,6 +25,18 @@ function getCsrfToken(): string | null {
   return null;
 }
 
+// Function to fetch CSRF token from the backend
+export const fetchCsrfToken = async (): Promise<void> => {
+  try {
+    await axios.get(`${API_BASE_URL}/api/csrf-token/`, {
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.warn('Failed to fetch CSRF token:', error);
+    // Don't throw - app can still work if CSRF token is set via other means
+  }
+};
+
 // Request interceptor to add CSRF token
 api.interceptors.request.use(
   (config) => {

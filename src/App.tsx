@@ -2,13 +2,18 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import { checkAuth } from './services/api';
+import { checkAuth, fetchCsrfToken } from './services/api';
 import LoadingSpinner from './components/LoadingSpinner';
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+
+  // Initialize CSRF token on app startup
+  useEffect(() => {
+    fetchCsrfToken();
+  }, []);
 
   const verifyAuth = async () => {
     try {
