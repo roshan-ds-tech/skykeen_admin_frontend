@@ -8,6 +8,14 @@ axios.defaults.withCredentials = true;
 // ✅ Correct: api.skykeenentreprise.com (French spelling "entreprise")
 // ❌ Wrong: api.skykeenenterprise.com (English spelling "enterprise")
 // ❌ Wrong: api.skykeenentrepis.com or api.skykeenentrepris.com
+
+// Double-check the base URL at runtime
+if (API_BASE_URL && !API_BASE_URL.includes('skykeenentreprise')) {
+  console.error('❌ CRITICAL: API_BASE_URL does not contain correct domain!');
+  console.error('   Current:', API_BASE_URL);
+  console.error('   Expected: https://api.skykeenentreprise.com');
+}
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
@@ -16,10 +24,8 @@ const api = axios.create({
   },
 });
 
-// Log the base URL in development
-if (import.meta.env.DEV) {
-  console.log('Axios baseURL configured:', api.defaults.baseURL);
-}
+// Log the base URL to help debug
+console.log('🔗 Axios baseURL configured:', api.defaults.baseURL);
 
 // Function to get CSRF token from cookies
 function getCsrfToken(): string | null {

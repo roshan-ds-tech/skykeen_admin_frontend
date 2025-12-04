@@ -28,7 +28,28 @@ const Login = () => {
       }
     } catch (err: any) {
       console.error('Login error:', err);
-      const errorMessage = err.response?.data?.error || err.message || 'Login failed. Please try again.';
+      
+      // Safely extract error message
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (err?.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err?.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err?.message && typeof err.message === 'string') {
+        errorMessage = err.message;
+      } else if (err?.response?.status) {
+        if (err.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (err.response.status === 401) {
+          errorMessage = 'Invalid email or password.';
+        } else if (err.response.status === 403) {
+          errorMessage = 'Access denied.';
+        } else {
+          errorMessage = `Request failed with status ${err.response.status}`;
+        }
+      }
+      
       setError(errorMessage);
       setLoading(false);
     }

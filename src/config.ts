@@ -19,25 +19,49 @@ const envApiUrl = import.meta.env.VITE_API_URL;
 
 // Validate the API URL to catch typos
 const validateApiUrl = (url: string): string => {
-  // Check for common misspellings
-  if (url.includes('skykeenenterprise') && !url.includes('skykeenentreprise')) {
-    // English spelling "enterprise" detected
+  if (!url) {
+    return DEFAULT_API_URL;
+  }
+  
+  // Normalize the URL for comparison
+  const normalizedUrl = url.toLowerCase().trim();
+  
+  // Check for common misspellings - must be exact match check
+  // Check for "enterprise" (English) - wrong spelling
+  if (normalizedUrl.includes('skykeenenterprise') && !normalizedUrl.includes('skykeenentreprise')) {
     console.error('❌ ERROR: API URL has incorrect spelling!');
     console.error('   Found:', url);
     console.error('   Should be: https://api.skykeenentreprise.com');
     console.error('   Note: "entreprise" (French) NOT "enterprise" (English)');
-    // Return the correct URL instead of the wrong one
     return DEFAULT_API_URL;
   }
-  if (url.includes('skykeenentrepis') || url.includes('skykeenentrepris')) {
-    // Other misspellings
+  
+  // Check for "entrepris" (missing final 'e') - wrong spelling
+  if (normalizedUrl.includes('skykeenentrepris') && !normalizedUrl.includes('skykeenentreprise')) {
     console.error('❌ ERROR: API URL has incorrect spelling!');
     console.error('   Found:', url);
     console.error('   Should be: https://api.skykeenentreprise.com');
-    console.error('   Note: "entreprise" not "entrepis" or "entrepris"');
-    // Return the correct URL instead of the wrong one
+    console.error('   Note: "entreprise" (with final "e") NOT "entrepris" (missing "e")');
     return DEFAULT_API_URL;
   }
+  
+  // Check for "entrepis" (missing 'r' and 'e') - wrong spelling
+  if (normalizedUrl.includes('skykeenentrepis') && !normalizedUrl.includes('skykeenentreprise')) {
+    console.error('❌ ERROR: API URL has incorrect spelling!');
+    console.error('   Found:', url);
+    console.error('   Should be: https://api.skykeenentreprise.com');
+    console.error('   Note: "entreprise" NOT "entrepis"');
+    return DEFAULT_API_URL;
+  }
+  
+  // Final check: if URL doesn't contain the correct spelling, force it
+  if (!normalizedUrl.includes('skykeenentreprise')) {
+    console.warn('⚠️ WARNING: API URL does not contain correct domain. Using default.');
+    console.warn('   Provided:', url);
+    console.warn('   Using:', DEFAULT_API_URL);
+    return DEFAULT_API_URL;
+  }
+  
   return url;
 };
 
