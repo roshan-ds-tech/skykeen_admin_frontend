@@ -3,11 +3,17 @@
  * 
  * API Base URL configuration for the frontend application.
  * This can be overridden by setting VITE_API_URL in environment variables.
+ * 
+ * Frontend Admin Panel: admin.skykeenentreprise.com
+ * Backend API: api.skykeenentreprise.com
  */
 
 // IMPORTANT: Correct spelling is "entreprise" (French) NOT "enterprise" (English)
 // ✅ Correct: skykeenentreprise.com
 // ❌ Wrong: skykeenenterprise.com (English spelling)
+// 
+// Frontend runs at: admin.skykeenentreprise.com
+// Backend API runs at: api.skykeenentreprise.com
 const DEFAULT_API_URL = 'https://api.skykeenentreprise.com';
 const envApiUrl = import.meta.env.VITE_API_URL;
 
