@@ -18,9 +18,10 @@ const Login = () => {
       const response = await login(email, password);
       console.log('Login response:', response);
       if (response.success) {
-        // Wait a moment for session cookie to be set, then redirect
+        // Use React Router navigate instead of window.location.href
+        // This prevents a full page reload and 404 errors
         setTimeout(() => {
-          window.location.href = '/dashboard';
+          navigate('/dashboard', { replace: true });
         }, 200);
       } else {
         setError(response.error || 'Login failed. Please try again.');
