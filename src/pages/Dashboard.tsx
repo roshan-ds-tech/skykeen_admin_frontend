@@ -98,10 +98,15 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/login');
-    } catch (err) {
-      // Even if logout fails, navigate to login
-      navigate('/login');
+    } catch (err: any) {
+      // Log the error but don't show it to user
+      console.warn('Logout request failed:', err?.response?.status || err?.message);
+      // Even if logout fails (403, network error, etc.), we still want to log out locally
+      // Clear any local state if needed
+    } finally {
+      // Always navigate to login, regardless of whether the API call succeeded
+      // This ensures the user can always log out, even if the backend is having issues
+      navigate('/login', { replace: true });
     }
   };
 

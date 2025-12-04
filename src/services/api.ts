@@ -66,13 +66,41 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle CSRF token from Set-Cookie header
+// Response interceptor to handle CSRF token from Set-Cookie header and 403 errors
 api.interceptors.response.use(
   (response) => {
     // CSRF token is automatically set in cookies by Django
     return response;
   },
-  (error) => {
+  async (error) => {
+    // If we get a 403 error, it might be due to an expired or missing CSRF token
+    // Try to refresh the CSRF token and retry the request (except for logout)
+    if (error?.response?.status === 403 && error?.config && !error.config.url?.includes('/logout')) {
+      const originalRequest = error.config;
+      
+      // Check if we've already retried this request
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+        
+        try {
+          // Fetch a new CSRF token
+          await fetchCsrfToken();
+          
+          // Update the CSRF token in the original request
+          const csrfToken = getCsrfToken();
+          if (csrfToken) {
+            originalRequest.headers['X-CSRFToken'] = csrfToken;
+          }
+          
+          // Retry the original request
+          return api(originalRequest);
+        } catch (refreshError) {
+          // If refreshing fails, reject with the original error
+          return Promise.reject(error);
+        }
+      }
+    }
+    
     return Promise.reject(error);
   }
 );
@@ -84,8 +112,24 @@ export const login = async (email: string, password: string) => {
 };
 
 export const logout = async () => {
-  const response = await api.post('/api/admin/logout/');
-  return response.data;
+  try {
+    // Ensure we have a fresh CSRF token before logout
+    const csrfToken = getCsrfToken();
+    if (!csrfToken) {
+      console.warn('No CSRF token found, attempting to fetch one before logout');
+      await fetchCsrfToken();
+    }
+    
+    const response = await api.post('/api/admin/logout/');
+    return response.data;
+  } catch (error: any) {
+    // If logout fails due to CSRF or other issues, log it but don't throw
+    // The app should still allow navigation to login
+    if (error?.response?.status === 403) {
+      console.warn('Logout failed with 403 (likely CSRF issue), but proceeding with logout');
+    }
+    throw error;
+  }
 };
 
 export const checkAuth = async () => {
