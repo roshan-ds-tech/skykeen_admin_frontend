@@ -4,6 +4,8 @@ import { API_BASE_URL } from '../config';
 // Configure axios to use credentials for session-based authentication
 axios.defaults.withCredentials = true;
 
+// Ensure we're using the correct API base URL
+// Correct domain: api.skykeenentreprise.com (not entrepris or entrepis)
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
@@ -11,6 +13,11 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Log the base URL in development
+if (import.meta.env.DEV) {
+  console.log('Axios baseURL configured:', api.defaults.baseURL);
+}
 
 // Function to get CSRF token from cookies
 function getCsrfToken(): string | null {
