@@ -5,7 +5,9 @@ import { API_BASE_URL } from '../config';
 axios.defaults.withCredentials = true;
 
 // Ensure we're using the correct API base URL
-// Correct domain: api.skykeenentreprise.com (not entrepris or entrepis)
+// ✅ Correct: api.skykeenentreprise.com (French spelling "entreprise")
+// ❌ Wrong: api.skykeenenterprise.com (English spelling "enterprise")
+// ❌ Wrong: api.skykeenentrepis.com or api.skykeenentrepris.com
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,

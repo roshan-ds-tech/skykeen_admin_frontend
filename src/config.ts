@@ -5,13 +5,26 @@
  * This can be overridden by setting VITE_API_URL in environment variables.
  */
 
-// IMPORTANT: Correct spelling is "entreprise" (not "entrepis" or "entrepris")
+// IMPORTANT: Correct spelling is "entreprise" (French) NOT "enterprise" (English)
+// ✅ Correct: skykeenentreprise.com
+// ❌ Wrong: skykeenenterprise.com (English spelling)
 const DEFAULT_API_URL = 'https://api.skykeenentreprise.com';
 const envApiUrl = import.meta.env.VITE_API_URL;
 
 // Validate the API URL to catch typos
 const validateApiUrl = (url: string): string => {
+  // Check for common misspellings
+  if (url.includes('skykeenenterprise') && !url.includes('skykeenentreprise')) {
+    // English spelling "enterprise" detected
+    console.error('❌ ERROR: API URL has incorrect spelling!');
+    console.error('   Found:', url);
+    console.error('   Should be: https://api.skykeenentreprise.com');
+    console.error('   Note: "entreprise" (French) NOT "enterprise" (English)');
+    // Return the correct URL instead of the wrong one
+    return DEFAULT_API_URL;
+  }
   if (url.includes('skykeenentrepis') || url.includes('skykeenentrepris')) {
+    // Other misspellings
     console.error('❌ ERROR: API URL has incorrect spelling!');
     console.error('   Found:', url);
     console.error('   Should be: https://api.skykeenentreprise.com');
