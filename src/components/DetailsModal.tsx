@@ -49,7 +49,27 @@ const DetailsModal = ({ registration, onClose, onUpdate }: DetailsModalProps) =>
       onUpdate();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to verify payment');
+      let errorMessage = 'Failed to verify payment';
+      
+      if (err?.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err?.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err?.message && typeof err.message === 'string') {
+        errorMessage = err.message;
+      } else if (err?.response?.status) {
+        if (err.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (err.response.status === 401) {
+          errorMessage = 'Unauthorized. Please log in again.';
+        } else if (err.response.status === 403) {
+          errorMessage = 'Access denied.';
+        } else {
+          errorMessage = `Request failed with status ${err.response.status}`;
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -191,7 +211,9 @@ const DetailsModal = ({ registration, onClose, onUpdate }: DetailsModalProps) =>
                 <ul className="list-disc list-inside space-y-1">
                   {registration.competitions.map((comp, index) => (
                     <li key={index} className="text-white">
-                      {comp.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      {comp && typeof comp === 'string' 
+                        ? comp.replace(/_/g, ' ').replace(/\b\w/g, l => l ? l.toUpperCase() : '')
+                        : comp}
                     </li>
                   ))}
                 </ul>
@@ -207,7 +229,9 @@ const DetailsModal = ({ registration, onClose, onUpdate }: DetailsModalProps) =>
                 <ul className="list-disc list-inside space-y-1">
                   {registration.workshops.map((workshop, index) => (
                     <li key={index} className="text-white">
-                      {workshop.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      {workshop && typeof workshop === 'string'
+                        ? workshop.replace(/_/g, ' ').replace(/\b\w/g, l => l ? l.toUpperCase() : '')
+                        : workshop}
                     </li>
                   ))}
                 </ul>

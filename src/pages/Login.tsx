@@ -40,14 +40,20 @@ const Login = () => {
         errorMessage = err.message;
       } else if (err?.response?.status) {
         if (err.response.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
+          errorMessage = 'Server error. Please contact the administrator or try again later.';
         } else if (err.response.status === 401) {
-          errorMessage = 'Invalid email or password.';
+          errorMessage = 'Invalid email or password. Please check your credentials.';
         } else if (err.response.status === 403) {
-          errorMessage = 'Access denied.';
+          errorMessage = 'Access denied. You do not have permission to access this resource.';
+        } else if (err.response.status === 404) {
+          errorMessage = 'Service not found. Please check if the API is available.';
+        } else if (err.response.status === 503) {
+          errorMessage = 'Service temporarily unavailable. Please try again later.';
         } else {
-          errorMessage = `Request failed with status ${err.response.status}`;
+          errorMessage = `Request failed with status ${err.response.status}. Please try again.`;
         }
+      } else if (err?.code === 'ERR_NETWORK' || err?.message?.includes('Network Error')) {
+        errorMessage = 'Network error. Please check your internet connection.';
       }
       
       setError(errorMessage);
